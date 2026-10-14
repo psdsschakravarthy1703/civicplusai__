@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CivicPulse AI — See the issue. Understand the impact. Drive the action.</title>
+  <meta name="description" content="CivicPulse AI — An AI-powered civic intelligence platform that transforms citizen reports into actionable community insights. Demo application for Nagpur city.">
+  <meta name="robots" content="noindex">
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <!-- App Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+
+  <!-- Favicon inline SVG -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230d9488'/><text y='68' x='18' font-size='60' font-family='sans-serif' fill='white'>📡</text></svg>">
+</head>
+<body>
+<div class="app-wrapper" role="application" aria-label="CivicPulse AI Application">
+
+  <!-- HEADER -->
+  <header class="app-header" role="banner">
+    <div class="header-inner">
+
+      <!-- Logo -->
+      <a href="#" class="logo" aria-label="CivicPulse AI Home" onclick="navigateTo('dashboard'); return false;">
+        <div class="logo-icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="2"/>
+            <path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="logo-name">CivicPulse AI</span>
+          <span class="logo-tagline">See the issue. Understand the impact. Drive the action.</span>
+        </div>
+      </a>
+
+      <!-- Navigation Tabs -->
+      <nav class="nav-tabs" role="navigation" aria-label="Main navigation" id="nav-tabs">
+        <button class="nav-tab active" data-view="dashboard" onclick="navigateTo('dashboard')" aria-label="Dashboard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </button>
+        <button class="nav-tab" data-view="report" onclick="navigateTo('report')" aria-label="Report an Issue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14m-7-7h14"/></svg>
+          Report Issue
+        </button>
+        <button class="nav-tab" data-view="explorer" onclick="navigateTo('explorer')" aria-label="Community Explorer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          Community Explorer
+        </button>
+        <button class="nav-tab" data-view="action-center" onclick="navigateTo('action-center')" aria-label="Municipal Action Center">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          Action Center
+        </button>
+        <button class="nav-tab" data-view="insights" onclick="navigateTo('insights')" aria-label="Predictive Insights">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Insights
+        </button>
+        <button class="nav-tab" data-view="impact" onclick="navigateTo('impact')" aria-label="Impact Center">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+          Impact
+        </button>
+      </nav>
+
+      <!-- Header Actions -->
+      <div class="header-actions" aria-label="Header controls">
+        <span class="demo-badge" title="This application runs in Demo Mode. All data is simulated.">DEMO</span>
+
+        <button class="btn-icon" id="btn-dark-mode" onclick="toggleDarkMode()" aria-label="Toggle dark mode" title="Toggle dark mode">
+          <svg id="icon-dark" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg id="icon-light" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="hidden"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-settings" onclick="openSettingsModal()" aria-label="AI and System Settings" title="AI & System Settings">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-reset-demo" onclick="confirmResetDemo()" aria-label="Reset demo data" title="Reset demo data to original seed">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.14"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="app-main" role="main" id="app-main">
+    <div id="app-content">
+      <!-- Content rendered by JavaScript -->
+      <div style="display:flex;align-items:center;justify-content:center;height:400px;flex-direction:column;gap:16px;color:#94a3b8;">
+        <div style="font-size:48px;">📡</div>
+        <div style="font-size:16px;font-weight:600;">Loading CivicPulse AI...</div>
+        <div style="font-size:13px;">Initializing civic intelligence platform</div>
+      </div>
+    </div>
+  </main>
+
+  <!-- MODAL OVERLAY -->
+  <div id="modal-overlay" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal" id="modal-container" role="document">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modal-title">Issue Details</h2>
+        <button class="modal-close" onclick="closeModal()" aria-label="Close modal">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+      <div class="modal-footer" id="modal-footer"></div>
+    </div>
+  </div>
+
+  <!-- TOAST CONTAINER -->
+  <div id="toast-container" aria-live="polite" aria-atomic="false"></div>
+
+  <!-- PRIVACY / RESPONSIBLE AI NOTICE (collapsed) -->
+  <footer style="background:var(--bg-secondary);border-top:1px solid var(--border);padding:12px 24px;font-size:11px;color:var(--text-muted);text-align:center;" role="contentinfo">
+    <strong style="color:var(--text-secondary);">CivicPulse AI — Demo Application</strong> &nbsp;|&nbsp;
+    All data shown is <strong>simulated demonstration data</strong> for the fictional Demo City of Nagpur. Not connected to any real government system. &nbsp;|&nbsp;
+    AI analysis is <strong>not a verified or official assessment</strong>. &nbsp;|&nbsp;
+    No personal information is collected. &nbsp;|&nbsp;
+    <span style="color:var(--amber);">⚠ Demo Mode Active</span>
+  </footer>
+
+</div><!-- /.app-wrapper -->
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV/XN/WLs=" crossorigin=""></script>
+
+<!-- App Data -->
+<script src="js/data.js"></script>
+
+<!-- App Logic -->
+<script src="js/app.js"></script>
+
+</body>
+</html>
